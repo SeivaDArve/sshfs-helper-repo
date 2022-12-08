@@ -1,0 +1,95 @@
+#!/bin/bash
+
+function f_ssfs_client-and-server {
+   # For arch based systems, to install sshfs (both client and server)
+      # You only need to install one package
+      # Which is:
+      sudo pacman -S openssh
+      
+      
+
+}
+
+function f_sshfs_server {
+   # For Debian based systems
+      sudo apt install openssh-server
+
+   # If you want your service/daemon always running, enable it by:
+      sudo systemctl enable sshd 
+
+   # Now, if you are trying to acess the server, it needs to be running:
+     # If it is running System D, start it by:
+      sudo systemctl start sshd 
+   
+   # Getting the IP Adress
+      
+      # Link Tutorial: https://www.linuxtrainingacademy.com/determine-public-ip-address-command-line-curl/
+
+      # You can determine the IP address or addresses of your Linux system by using the hostname, ifconfig, or ip commands. 
+         # To get into this machine, you need the IP Adress
+            ip addr
+
+         # You can also use
+            hostname -I
+     
+         # Getting the public IP Adress (there are several ways) use for example:
+            curl ifconfig.me
+
+   # Getting the username to the client side
+      # run
+      whoami
+
+   # Reading the man page may be needed:
+      man sshfs
+
+      # In the end, if you have to give full access to the client, you offer this to the client:
+        declare v_server_root_dir="/" 
+        declare v_client_prefered_mountpoint=$(read -p "After Creating a dir, navigate to it and answer ." v_ans)
+        'sshfs $(whoami)@$(hostname -I):$v_server_root_dir $v_ans'
+
+}
+
+
+function f_sshfs_client {
+   # For Debian or Ubuntu based systems
+      sudo apt install openssh-client
+
+   # To check if the remote machine is online, find it's ip adress first and then confirm it is  only using the ping command:
+      ping 192.000.0.0 # Example
+
+   # Install sshfs
+      sudo apt install sshfs
+
+   # Prepare great and intuitive mountpoints (at the client side)
+      # example:
+         mkdir -p ~/sshfs/view-UbuntuPi-miau # One possible place to view. See below how to reach this:
+
+         # Ask every server for their hostnames (the machine name that contains every possible user)
+            # Run 'hostname' at server terminal (gives machine name)
+            # Run 'whoami'   at server terminal (gives username)
+               # Example: UbuntuPi (machine) + miau (user)
+            mkdir -p ~/.sshfs/view-${server_hostname}-${server_whoami}
+}
+
+function f_sshfs_client_on_WSL {
+   # On Windows Subsystem for Linux running Ubuntu, there is no System D
+
+   # You can ping the remote machine
+   
+   # You can install sshfs with
+      sudo apt install sshfs
+
+}
+
+function f_ssh_termux {
+   
+   # Trying to connect to home PC or Raspberry pi:
+      # By following the previous installations, termux did not find any openssh-client when running:
+         #pkg install openssh-client
+      # But it found and installed:
+         pkg install openssh
+   
+      # To install sshfs, if you run 'man sshfs' termux will say
+         # "It is not installed, but you can installl it by running:"
+         # "pkg install sshfs, after running pkg install root-repo"
+}
